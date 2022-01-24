@@ -1,9 +1,9 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from hourglass import Bottleneck
-from hourglass import HourglassNet
-from coordRegressor import coordRegressor
+from .hourglass import Bottleneck
+from .hourglass import HourglassNet
+from .coordRegressor import coordRegressor
 
 from utils.osutils import mkdir_p, isfile, isdir, join
 from utils.misc import save_checkpoint, save_pred
