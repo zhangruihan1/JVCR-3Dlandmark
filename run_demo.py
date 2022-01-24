@@ -163,7 +163,7 @@ if __name__ == '__main__':
                         help='path to the pre-trained model')
     parser.add_argument('--gpus', default='', type=str, help='set gpu IDs')
     parser.add_argument('--imgDir', default='./imgs/', type=str, help='path to test images')
-    parser.add_argument('--lmDir', default='./imgs/', type=str, help='path to ground-truth .pts files')
+#     parser.add_argument('--lmDir', default=, type=str, help='path to ground-truth .pts files')
     parser.add_argument('--outDir', default='./output/', type=str, help='path for saving prediction results')
     parser.add_argument('--verbose', default=False, action='store_true', help='enable visualization')
 
