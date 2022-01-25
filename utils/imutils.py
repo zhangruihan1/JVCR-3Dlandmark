@@ -234,8 +234,8 @@ def show_joints3D(predPts, pairs=None, ax=None):
     ax.set_zlabel('y', fontsize=10)
     ax.view_init(*view_angle)
 
-    ax.set_aspect('equal')
-    set_axes_equal(ax)
+#     ax.set_aspect('equal')
+#     set_axes_equal(ax)
 
 
 def show_sample(inputs, target):
