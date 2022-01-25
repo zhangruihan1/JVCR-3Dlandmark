@@ -202,38 +202,49 @@ def transform_preds(coords, center, scale, res, z_res=None, invert=1):
             raise Exception('dimension not match.')
     return coords
 
-
-def crop(img, center, scale, res, rot=0):
-    img = im_to_numpy(img)
-
+def get_crop_boundary(img, center, scale, res):
     # Upper left point
     ul = np.array(transform([0, 0], center, scale, res, invert=1))
     # Bottom right point
     br = np.array(transform(res, center, scale, res, invert=1))
 
-    # Padding so that when rotated proper amount of context is included
-    pad = int(np.linalg.norm(br - ul) / 2 - float(br[1] - ul[1]) / 2)
-    if not rot == 0:
-        ul -= pad
-        br += pad
+    ul[0] = max(0, ul[0])
+    ul[1] = max(0, ul[1])
+    br[0] = min(br[0], img.shape[0])
+    br[1] = min(br[1], img.shape[1])
+    return ul, br
 
-    new_shape = [br[1] - ul[1], br[0] - ul[0]]
-    if len(img.shape) > 2:
-        new_shape += [img.shape[2]]
-    new_img = np.zeros(new_shape)
+# def crop(img, center, scale, res, rot=0):
+#     img = im_to_numpy(img)
 
-    # Range to fill new array
-    new_x = max(0, -ul[0]), min(br[0], len(img[0])) - ul[0]
-    new_y = max(0, -ul[1]), min(br[1], len(img)) - ul[1]
-    # Range to sample from original image
-    old_x = max(0, ul[0]), min(len(img[0]), br[0])
-    old_y = max(0, ul[1]), min(len(img), br[1])
-    new_img[new_y[0]:new_y[1], new_x[0]:new_x[1]] = img[old_y[0]:old_y[1], old_x[0]:old_x[1]]
+#     # Upper left point
+#     ul = np.array(transform([0, 0], center, scale, res, invert=1))
+#     # Bottom right point
+#     br = np.array(transform(res, center, scale, res, invert=1))
 
-    if not rot == 0:
-        # Remove padding
-        new_img = scipy.misc.imrotate(new_img, rot)
-        new_img = new_img[pad:-pad, pad:-pad]
+#     # Padding so that when rotated proper amount of context is included
+#     pad = int(np.linalg.norm(br - ul) / 2 - float(br[1] - ul[1]) / 2)
+#     if not rot == 0:
+#         ul -= pad
+#         br += pad
 
-    new_img = im_to_torch(scipy.misc.imresize(new_img, res))
-    return new_img
+#     new_shape = [br[1] - ul[1], br[0] - ul[0]]
+#     if len(img.shape) > 2:
+#         new_shape += [img.shape[2]]
+#     new_img = np.zeros(new_shape)
+
+#     # Range to fill new array
+#     new_x = max(0, -ul[0]), min(br[0], len(img[0])) - ul[0]
+#     new_y = max(0, -ul[1]), min(br[1], len(img)) - ul[1]
+#     # Range to sample from original image
+#     old_x = max(0, ul[0]), min(len(img[0]), br[0])
+#     old_y = max(0, ul[1]), min(len(img), br[1])
+#     new_img[new_y[0]:new_y[1], new_x[0]:new_x[1]] = img[old_y[0]:old_y[1], old_x[0]:old_x[1]]
+
+#     if not rot == 0:
+#         # Remove padding
+#         new_img = scipy.misc.imrotate(new_img, rot)
+#         new_img = new_img[pad:-pad, pad:-pad]
+
+#     new_img = im_to_torch(scipy.misc.imresize(new_img, res))
+#     return new_img
